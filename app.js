@@ -3,7 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const session = require('express-session');
+var session = require('express-session');
+var path = require('path');
+var fs = require('fs')
+// const RedisStore = require('connect-redis')(session);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,11 +18,29 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+
+const ENV = process.env.NODE_ENV;
+if(ENV !== 'production'){
+  app.use(logger('dev'));
+}else{
+  const logFileName = path.join(__dirname,'logs','access.log');
+  const wirteStream = fs.createWriteStream(logFileName,{
+    flags:'a'
+  })
+  app.use(logger('combined',{
+    stream:wirteStream
+  }))
+}
+
 app.use(express.json()); //req.body
 app.use(express.urlencoded({ extended: false })); //做除了json格式之外的数据req.body
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
+
+// const redisClient = require('./db/redis');
+// const sessionStore = new RedisStore({
+//   client: redisClient
+// })
 app.use(session({
   secret:'OIkn0_86g#', //密匙
   cookie: {
@@ -27,6 +48,7 @@ app.use(session({
     // httpOnly: true, //默认
     maxAge: 24*60*60*1000, //过期时间
   }
+  // store: sessionStore
 }))
 
 app.use('/', indexRouter);
