@@ -2,9 +2,9 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require("body-parser");
 var logger = require('morgan');
 var session = require('express-session');
-var path = require('path');
 var fs = require('fs')
 // const RedisStore = require('connect-redis')(session);
 
@@ -14,8 +14,9 @@ const blogRouter = require('./routes/blog');
 const userRouter = require('./routes/user');
 var app = express();
 
-// view engine setup 前端页面
+// 告诉 Express 你的视图存在于一个名为 views 的文件夹中
 app.set('views', path.join(__dirname, 'views'));
+// 告诉 Express 你将使用jade模板引擎 ejs
 app.set('view engine', 'jade');
 
 
@@ -56,7 +57,7 @@ app.use('/users', usersRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/user', userRouter);
 
-// catch 404 and forward to error handler
+// 渲染404页面，因为你请求了未知资源
 app.use(function(req, res, next) {
   next(createError(404));
 });

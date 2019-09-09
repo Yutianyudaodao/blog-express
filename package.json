@@ -8,6 +8,7 @@
     "prd": "cross-env NODE_ENV=production nodemon ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "connect-redis": "^3.4.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
